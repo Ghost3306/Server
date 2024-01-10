@@ -2,7 +2,9 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from users.models import Customers
 from users.accessibility import gen_api_key
-
+from django.core.mail import BadHeaderError, send_mail
+from django.conf import settings
+import random
 
 def customers(request):
     apikey = gen_api_key()
@@ -32,3 +34,38 @@ def customers(request):
     customer_obj.save()
     
     return JsonResponse({'status':'200','message':'Users account created successful!'})
+
+
+def send_otp(request):
+    otp = random.randint(0000,9999)
+    to_email = request.GET.get('email')
+    username = request.GET.get('name')
+    subject = 'One-Time Password (OTP) for Authentication'
+    message = f"""
+    Dear {username},
+
+    We hope this message finds you well. As part of our commitment to ensuring the security of your account, we have initiated a process that requires your authentication.
+
+    To proceed, please use the following One-Time Password (OTP) within the next 10 minutes on our website:
+
+    OTP: {otp}
+
+    If you did not initiate this authentication process or have any concerns regarding the security of your account, please contact our support team immediately at supportecommerce@gmail.com.
+
+    Thank you for your cooperation in maintaining the security of your account.
+
+    Best regards,
+    ECommerce Inc.
+    """
+    
+    from_email = settings.EMAIL_HOST_USER
+    if subject and message and from_email:
+        try:
+            send_mail(subject, message, from_email, [to_email,])
+            print('mail send successfully')
+            return JsonResponse({'status':'200','message':'otp send successfully...','otp':otp})
+        except BadHeaderError:
+            return JsonResponse({'status':'400','message':'Failed to send otp...',})
+        
+    else:    
+        return JsonResponse({'status':'400','message':'Invalid email address....Please reenter email!',})
