@@ -43,7 +43,10 @@ def customers(request):
 def send_otp(request):
     otp = random.randint(0000,9999)
     to_email = request.GET.get('email')
-    username = request.GET.get('name')
+    customers = Customers.objects.get(email = to_email)
+    print(customers.name)
+    username = customers.name
+    
     subject = 'One-Time Password (OTP) for Authentication'
     message = f"""
     Dear {username},
@@ -63,11 +66,12 @@ def send_otp(request):
     """
     
     from_email = settings.EMAIL_HOST_USER
+    
     if subject and message and from_email:
         try:
             send_mail(subject, message, from_email, [to_email,])
             print('mail send successfully')
-            return JsonResponse({'status':'200','message':'otp send successfully...','otp':otp})
+            return JsonResponse({'status':'200','message':'otp send successfully...','otp':otp,'apikey':customers.apikey})
         except BadHeaderError:
             return JsonResponse({'status':'400','message':'Failed to send otp...',})
         
@@ -92,3 +96,34 @@ def login(request):
                 return JsonResponse({'status':'500','message':'Internal Server Error'})
     
 
+def forgot_pass(request):
+    apikey = request.GET.get('apikey')
+    email = request.GET.get('email')
+    password = request.GET.get('password')
+
+    try:
+        customers = Customers.objects.all()
+        for x in customers:
+            if x.email==email and x.apikey ==apikey:
+                try:
+                    customers = Customers.objects.get(email=email)
+                
+                except Exception as e:
+                    return JsonResponse({'status':'404','message':'Entered email does not exist'})
+                
+                try:
+                    customers.password = password
+                    customers.save()
+                    return JsonResponse({'status':'200','message':'Password update successfully'})
+                except Exception as e:
+                    return JsonResponse({'status':'500','message':'Internal Server Error! failed to update password!...Please try again after some time'})
+            else:
+                return JsonResponse({'status':'401','message':'Unauthorized access detected!'})
+    except:
+        return JsonResponse({'status':'500','message':'Internal Server Error!'})
+
+    
+    
+    
+    
+    
