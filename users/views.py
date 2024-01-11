@@ -87,16 +87,29 @@ def login(request):
         for x in customers:
             try:
                 if x.email==username and x.password==password:
-                    return JsonResponse({'status':'200','message':'User authenticate...Login successful!'})
-            except Exception:
+                    data = {
+                        'name':x.name,
+                        'email':x.email,
+                        'phone':x.phone,
+                        'address':x.address,
+                        'birthdate':x.birthdate,
+                        'apikey':x.apikey,
+                        'password':x.password,
+                    }
+                    return JsonResponse({'status':'200','message':'User authenticate...Login successful!','data':data})
+            except Exception as e:
+                p
                 return JsonResponse({'status':'500','message':'Internal Server Error'})
             
         return JsonResponse({'status':'401','message':'User unauthorized...Login failed!'})
-    except Exception:
+    except Exception as e:
+                print(str(e))
+                
                 return JsonResponse({'status':'500','message':'Internal Server Error'})
     
 
 def forgot_pass(request):
+
     apikey = request.GET.get('apikey')
     email = request.GET.get('email')
     password = request.GET.get('password')
