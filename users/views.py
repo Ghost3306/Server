@@ -5,6 +5,7 @@ from users.accessibility import gen_api_key
 from django.core.mail import BadHeaderError, send_mail
 from django.conf import settings
 import random
+from users.models import Cart
 
 def customers(request):
     apikey = gen_api_key()
@@ -30,9 +31,12 @@ def customers(request):
     
     password = request.GET.get('password')
     # print(name,email,phone,address,birthdate,apikey,password)
-    customer_obj = Customers(name=name,email=email,phone=phone,address=address,birthdate=birthdate,apikey=apikey,password=password)
-    customer_obj.save()
-    
+    try:
+        customer_obj = Customers(name=name,email=email,phone=phone,address=address,birthdate=birthdate,apikey=apikey,password=password)
+        customer_obj.save()
+    except Exception:
+        return JsonResponse({'status':'500','message':'Failed to register user...Please try again!'})
+
     return JsonResponse({'status':'200','message':'Users account created successful!'})
 
 
@@ -69,3 +73,22 @@ def send_otp(request):
         
     else:    
         return JsonResponse({'status':'400','message':'Invalid email address....Please reenter email!',})
+    
+
+def login(request):
+    username = request.GET.get('username')
+    password = request.GET.get('password')
+    try:
+        customers = Customers.objects.all()
+        for x in customers:
+            try:
+                if x.email==username and x.password==password:
+                    return JsonResponse({'status':'200','message':'User authenticate...Login successful!'})
+            except Exception:
+                return JsonResponse({'status':'500','message':'Internal Server Error'})
+            
+        return JsonResponse({'status':'401','message':'User unauthorized...Login failed!'})
+    except Exception:
+                return JsonResponse({'status':'500','message':'Internal Server Error'})
+    
+

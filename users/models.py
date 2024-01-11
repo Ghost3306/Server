@@ -10,4 +10,16 @@ class Customers(models.Model):
     password = models.TextField()
 
 
+class Cart(models.Model):
+    productname = models.CharField(max_length=255)
+    productid = models.IntegerField()
+    useruid = models.IntegerField()
+    username = models.CharField(max_length=255)
+    date = models.DateTimeField()
+    quantity = models.IntegerField()
+    sellerid = models.IntegerField()
+    sellername = models.CharField(max_length=255)
+
+    
+
     
