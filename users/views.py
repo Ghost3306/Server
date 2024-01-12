@@ -6,7 +6,7 @@ from django.core.mail import BadHeaderError, send_mail
 from django.conf import settings
 import random
 from users.models import Cart
-
+from django.views.decorators.csrf import csrf_exempt
 def customers(request):
     apikey = gen_api_key()
     email = request.GET.get('email')
@@ -79,13 +79,18 @@ def send_otp(request):
         return JsonResponse({'status':'400','message':'Invalid email address....Please reenter email!',})
     
 
+@csrf_exempt
 def login(request):
-    username = request.GET.get('username')
-    password = request.GET.get('password')
+    
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+   
     try:
+       
         customers = Customers.objects.all()
         for x in customers:
             try:
+                print(x.email,x.password)
                 if x.email==username and x.password==password:
                     data = {
                         'name':x.name,
@@ -98,7 +103,7 @@ def login(request):
                     }
                     return JsonResponse({'status':'200','message':'User authenticate...Login successful!','data':data})
             except Exception as e:
-                p
+                
                 return JsonResponse({'status':'500','message':'Internal Server Error'})
             
         return JsonResponse({'status':'401','message':'User unauthorized...Login failed!'})
