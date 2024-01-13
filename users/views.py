@@ -39,11 +39,15 @@ def customers(request):
 
     return JsonResponse({'status':'200','message':'Users account created successful!'})
 
-
+@csrf_exempt
 def send_otp(request):
-    otp = random.randint(0000,9999)
-    to_email = request.GET.get('email')
-    customers = Customers.objects.get(email = to_email)
+    otp = random.randint(1111,9999)
+    to_email = request.POST.get('email')
+    print(to_email)
+    try:
+        customers = Customers.objects.get(email = to_email)
+    except:
+        return JsonResponse({'status':'400','message':'Invalid email address....Please reenter email!',})
     print(customers.name)
     username = customers.name
     
@@ -73,7 +77,7 @@ def send_otp(request):
             print('mail send successfully')
             return JsonResponse({'status':'200','message':'otp send successfully...','otp':otp,'apikey':customers.apikey})
         except BadHeaderError:
-            return JsonResponse({'status':'400','message':'Failed to send otp...',})
+            return JsonResponse({'status':'500','message':'Failed to send otp...',})
         
     else:    
         return JsonResponse({'status':'400','message':'Invalid email address....Please reenter email!',})
@@ -111,16 +115,17 @@ def login(request):
         print(str(e))
         return JsonResponse({'status':'500','message':'Internal Server Error'})
     
-
+@csrf_exempt
 def forgot_pass(request):
-
-    apikey = request.GET.get('apikey')
-    email = request.GET.get('email')
-    password = request.GET.get('password')
-
+   
+    apikey = request.POST.get('apikey')
+    email = request.POST.get('email')
+    password = request.POST.get('password')
+    print('email',email,password)
     try:
         customers = Customers.objects.all()
         for x in customers:
+            print(x.email,x.apikey)
             if x.email==email and x.apikey ==apikey:
                 try:
                     customers = Customers.objects.get(email=email)
