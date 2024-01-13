@@ -108,9 +108,8 @@ def login(request):
             
         return JsonResponse({'status':'401','message':'User unauthorized...Login failed!'})
     except Exception as e:
-                print(str(e))
-                
-                return JsonResponse({'status':'500','message':'Internal Server Error'})
+        print(str(e))
+        return JsonResponse({'status':'500','message':'Internal Server Error'})
     
 
 def forgot_pass(request):
