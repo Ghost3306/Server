@@ -7,9 +7,12 @@ from django.conf import settings
 import random
 from users.models import Cart
 from django.views.decorators.csrf import csrf_exempt
+
+
+@csrf_exempt
 def customers(request):
     apikey = gen_api_key()
-    email = request.GET.get('email')
+    email = request.POST.get('email')
     #checking for existing api key
     while True:
         server_api = Customers.objects.filter(apikey=apikey)
@@ -23,18 +26,19 @@ def customers(request):
         return JsonResponse({'status':'409','message':'User already exist..Please Login!'})
     print(len(apikey))
     print("api" ,apikey)
-    name = request.GET.get('name')
+    name = request.POST.get('name')
     
-    phone = request.GET.get('phone')
-    address = request.GET.get('address')
-    birthdate = request.GET.get('birthdate')
+    phone = request.POST.get('phone')
+    address = request.POST.get('address')
+    birthdate = request.POST.get('birthdate')
     
-    password = request.GET.get('password')
-    # print(name,email,phone,address,birthdate,apikey,password)
+    password = request.POST.get('password')
+    print(name,email,phone,len(phone),address,birthdate,apikey,password)
     try:
-        customer_obj = Customers(name=name,email=email,phone=phone,address=address,birthdate=birthdate,apikey=apikey,password=password)
+        customer_obj = Customers(name=name,email=email,phone=str(phone),address=address,birthdate=birthdate,apikey=apikey,password=password)
         customer_obj.save()
-    except Exception:
+    except Exception as e:
+        print(e)
         return JsonResponse({'status':'500','message':'Failed to register user...Please try again!'})
 
     return JsonResponse({'status':'200','message':'Users account created successful!'})
@@ -43,13 +47,18 @@ def customers(request):
 def send_otp(request):
     otp = random.randint(1111,9999)
     to_email = request.POST.get('email')
+    apistate = False
     print(to_email)
+    api = ''
     try:
         customers = Customers.objects.get(email = to_email)
+        username = customers.name
+        api = customers.apikey
     except:
-        return JsonResponse({'status':'400','message':'Invalid email address....Please reenter email!',})
-    print(customers.name)
-    username = customers.name
+        # return JsonResponse({'status':'400','message':'Invalid email address....Please reenter email!',})
+        username = "Dear Customer"
+        api = '404'
+   
     
     subject = 'One-Time Password (OTP) for Authentication'
     message = f"""
@@ -75,7 +84,7 @@ def send_otp(request):
         try:
             send_mail(subject, message, from_email, [to_email,])
             print('mail send successfully')
-            return JsonResponse({'status':'200','message':'otp send successfully...','otp':otp,'apikey':customers.apikey})
+            return JsonResponse({'status':'200','message':'otp send successfully...','otp':otp,'apikey':api})
         except BadHeaderError:
             return JsonResponse({'status':'500','message':'Failed to send otp...',})
         
@@ -121,12 +130,13 @@ def forgot_pass(request):
     apikey = request.POST.get('apikey')
     email = request.POST.get('email')
     password = request.POST.get('password')
-    print('email',email,password)
+    print('email',email,password,apikey)
     try:
         customers = Customers.objects.all()
         for x in customers:
-            print(x.email,x.apikey)
+            print('checking:',x.email,x.apikey)
             if x.email==email and x.apikey ==apikey:
+                print('found:',x.email,x.apikey)
                 try:
                     customers = Customers.objects.get(email=email)
                 
@@ -139,8 +149,8 @@ def forgot_pass(request):
                     return JsonResponse({'status':'200','message':'Password update successfully'})
                 except Exception as e:
                     return JsonResponse({'status':'500','message':'Internal Server Error! failed to update password!...Please try again after some time'})
-            else:
-                return JsonResponse({'status':'401','message':'Unauthorized access detected!'})
+            
+        return JsonResponse({'status':'401','message':'Unauthorized access detected!'})     
     except:
         return JsonResponse({'status':'500','message':'Internal Server Error!'})
 
