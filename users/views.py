@@ -153,6 +153,9 @@ def forgot_pass(request):
         return JsonResponse({'status':'401','message':'Unauthorized access detected!'})     
     except:
         return JsonResponse({'status':'500','message':'Internal Server Error!'})
+    
+
+    
 
     
     
