@@ -84,7 +84,12 @@ def login(request):
                 print(x.bussinessemail,x.password)
                 if x.bussinessemail==username and x.password==password:
                     print('login success')
-                    return JsonResponse({'status':'200','message':'User authenticate...Login successful!','data':x.uniquekey})
+                    context = {
+                        'uniquekey':x.uniquekey,
+                        'name':x.bussinessname,
+                        'email':x.bussinessemail
+                    }
+                    return JsonResponse({'status':'200','message':'User authenticate...Login successful!','data':context})
             except Exception as e:
                 print(e)
                 return JsonResponse({'status':'500','message':'Internal Server Error'})

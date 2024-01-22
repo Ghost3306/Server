@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'users',
     'corsheaders',
     'rest_framework',
-    'seller'
+    'seller',
+    'products'
 ]
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
