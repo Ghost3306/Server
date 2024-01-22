@@ -23,7 +23,7 @@ class Seller(models.Model):
     ifsc = models.CharField(max_length = 25)
     aadharcard = models.CharField(max_length = 20)
     
-    password = models.CharField(max_length=50,default='password')
+    password = models.TextField()
 
 
 
