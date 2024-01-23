@@ -3,6 +3,7 @@ from django.db import models
 class Products(models.Model):
     uniqueid = models.IntegerField()
     name = models.CharField(max_length=255)
+    description = models.TextField(default='none')
     price = models.IntegerField()
     delivertcharge = models.IntegerField()
     sellerid = models.CharField(max_length=255)

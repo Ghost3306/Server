@@ -28,6 +28,7 @@ def addproduct(request):
         else:
             uniqueid = gen_api_key()
     name = request.POST.get('name')
+    descrription = request.POST.get('describe')
     price = request.POST.get('price')
     delivertcharge = request.POST.get('delivertcharge')
     
