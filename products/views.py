@@ -59,6 +59,13 @@ def allproduct(request):
     prod_serial = ProductsViewSerializer(product,many=True)
     return JsonResponse(prod_serial.data,safe=False)
 
+@csrf_exempt
+def sellersproducts(request):
+    sellerid = request.POST.get('sellerapi')
+    product = Products.objects.filter(sellerid=sellerid)
+    prod_serial = ProductsViewSerializer(product,many=True)
+    return JsonResponse(prod_serial.data,safe=False)
+
 
 @csrf_exempt
 def deleteproduct(request):
