@@ -58,3 +58,18 @@ def allproduct(request):
     product = Products.objects.all()
     prod_serial = ProductsViewSerializer(product,many=True)
     return JsonResponse(prod_serial.data,safe=False)
+
+
+@csrf_exempt
+def deleteproduct(request):
+    try:    
+        uniqueid = request.POST.get('uniqueid')
+        print(uniqueid)
+        products = Products.objects.filter(uniqueid=uniqueid)
+        for x in products:
+            print(x.name)
+        products.delete()
+
+        return JsonResponse({'status':'200'})
+    except:
+        return JsonResponse({'status':'403'})
