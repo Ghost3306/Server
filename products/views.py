@@ -80,3 +80,43 @@ def deleteproduct(request):
         return JsonResponse({'status':'200'})
     except:
         return JsonResponse({'status':'403'})
+    
+@csrf_exempt
+def updateproduct(request):
+    try:
+        uniqueid = request.POST.get('uniqueid')
+        name = request.POST.get('name')
+        descrription = request.POST.get('describe')
+        price = request.POST.get('price')
+        delivertcharge = request.POST.get('delivertcharge')
+        width = request.POST.get('width')
+        height = request.POST.get('height')
+        length = request.POST.get('length')
+        category = request.POST.get('category')
+        image1 = request.FILES['image1']
+        image2 =request.FILES['image2']
+        image3 = request.FILES['image3']
+        image4 = request.FILES['image4']
+        image5 = request.FILES['image5']
+
+        print(uniqueid,name)
+        products = Products.objects.get(uniqueid=uniqueid)
+        products.name = name
+        products.description = descrription
+        products.price = price
+        products.delivertcharge = delivertcharge
+        products.width = width
+        products.height=height
+        products.length = length
+        products.category =category
+        products.image1 = image1
+        products.image2 = image2
+        products.image3 = image3
+        products.image4 = image4
+        products.image5 = image5
+        products.save()
+        return JsonResponse({'status':'200'})
+    except:
+        return JsonResponse({'status':'403'})
+
+   
