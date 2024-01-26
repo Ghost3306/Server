@@ -119,4 +119,11 @@ def updateproduct(request):
     except:
         return JsonResponse({'status':'403'})
 
+@csrf_exempt  
+def searchproduct(request):
+    inputtext = request.POST.get('input')
+    products = Products.objects.filter(name__icontains=inputtext)
+    prodserializer = ProductsViewSerializer(products,many=True)
+    return JsonResponse(prodserializer.data,safe=False)
+
    

@@ -9,7 +9,8 @@ urlpatterns = [
     path('allproduct/',views.allproduct,name='allproduct'),
     path('deleteproduct/',views.deleteproduct,name='deleteproduct'),
     path('sellerproducts/',views.sellersproducts,name='sellerproducts'),
-    path('updateproduct/',views.updateproduct,name='updateproduct')
+    path('updateproduct/',views.updateproduct,name='updateproduct'),
+    path('searchproduct/',views.searchproduct,name='search')
 
 
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
