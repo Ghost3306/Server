@@ -152,4 +152,7 @@ def searchproduct(request):
     prodserializer = ProductsViewSerializer(product,many=True)
     return JsonResponse(prodserializer.data,safe=False)
 
+
+    
+
    

@@ -20,3 +20,15 @@ class Products(models.Model):
     image3 = models.ImageField(upload_to='')
     image4 = models.ImageField(upload_to='')
     image5 = models.ImageField(upload_to='')
+    rating = models.IntegerField(default=0)
+    len_review =models.IntegerField(default=0)
+
+class Review(models.Model):
+    uid = models.IntegerField()
+    productname = models.CharField(max_length=255)
+    productid = models.IntegerField()
+    reviewerid = models.CharField(max_length=255)
+    reviwername = models.CharField(max_length=255)
+    review = models.TextField()
+    start = models.IntegerField()
+    title = models.CharField(max_length=255)
