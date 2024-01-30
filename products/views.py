@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 from seller.models import Seller
 from users.accessibility import gen_api_key
 from products.models import Products
@@ -55,9 +56,22 @@ def addproduct(request):
 
 @csrf_exempt
 def allproduct(request):
+    page = request.POST.get('page', 1)
     product = Products.objects.all()
+    print(request.method)
+    print(page)
+    product_per_page = 10
+    paginator = Paginator(product,product_per_page)
+    try:
+        products = paginator.page(page)
+    except PageNotAnInteger:
+        products = paginator.page(1)
+
+    except EmptyPage:
+        products = paginator.page(paginator.num_pages)
+
     prod_serial = ProductsViewSerializer(product,many=True)
-    return JsonResponse(prod_serial.data,safe=False)
+    return JsonResponse(products,safe=False)
 
 @csrf_exempt
 def sellersproducts(request):
@@ -123,7 +137,19 @@ def updateproduct(request):
 def searchproduct(request):
     inputtext = request.POST.get('input')
     products = Products.objects.filter(name__icontains=inputtext)
-    prodserializer = ProductsViewSerializer(products,many=True)
+    page = request.POST.get('page', 1)
+
+    product_per_page = 10
+    paginator = Paginator(products,product_per_page)
+    try:
+        product = paginator.page(page)
+    except PageNotAnInteger:
+        product = paginator.page(1)
+
+    except EmptyPage:
+        product = paginator.page(paginator.num_pages)
+  
+    prodserializer = ProductsViewSerializer(product,many=True)
     return JsonResponse(prodserializer.data,safe=False)
 
    
