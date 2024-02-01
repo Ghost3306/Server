@@ -152,6 +152,25 @@ def searchproduct(request):
     prodserializer = ProductsViewSerializer(product,many=True)
     return JsonResponse(prodserializer.data,safe=False)
 
+@csrf_exempt  
+def searchcategory(request):
+    inputtext = request.POST.get('input')
+    products = Products.objects.filter(category__icontains=inputtext)
+    page = request.POST.get('page', 1)
+    
+    product_per_page = 10
+    paginator = Paginator(products,product_per_page)
+    try:
+        product = paginator.page(page)
+    except PageNotAnInteger:
+        product = paginator.page(1)
+
+    except EmptyPage:
+        product = paginator.page(paginator.num_pages)
+  
+    prodserializer = ProductsViewSerializer(product,many=True)
+    return JsonResponse(prodserializer.data,safe=False)
+
 
     
 
