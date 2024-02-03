@@ -6,7 +6,7 @@ class Seller(models.Model):
     bussinessemail = models.EmailField(default='abc@gmail.com')
     phone = models.CharField(max_length= 10)
     gst = models.CharField(max_length= 50)
-    bussimage = models.ImageField(upload_to='')
+    # bussimage = models.ImageField(upload_to='')
 
     state = models.CharField(max_length=50)
     district = models.CharField(max_length=50)

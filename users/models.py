@@ -1,5 +1,5 @@
 from django.db import models
-
+from datetime import datetime
 class Customers(models.Model):
     name = models.CharField(max_length=50)
     email = models.EmailField(default = 'default@gmail.com')
@@ -12,12 +12,13 @@ class Customers(models.Model):
 
 class Cart(models.Model):
     productname = models.CharField(max_length=255)
-    productid = models.IntegerField()
-    useruid = models.IntegerField()
+    productid = models.IntegerField()#from client
+    price = models.IntegerField()
+    useruid = models.CharField(max_length=255)#from client
     username = models.CharField(max_length=255)
-    date = models.DateTimeField()
-    quantity = models.IntegerField()
-    sellerid = models.IntegerField()
+    date = models.DateTimeField(default=datetime.today().strftime('%Y-%m-%d'))
+    quantity = models.CharField(max_length=255)#from client
+    sellerid = models.CharField(max_length=255)
     sellername = models.CharField(max_length=255)
 
     

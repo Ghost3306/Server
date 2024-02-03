@@ -7,7 +7,10 @@ from django.conf import settings
 import random
 from users.models import Cart
 from django.views.decorators.csrf import csrf_exempt
-
+from products.models import Products
+from seller.models import Seller
+from users.models import Cart
+from users.serializers import CartShowSerializer
 
 @csrf_exempt
 def customers(request):
@@ -153,6 +156,48 @@ def forgot_pass(request):
         return JsonResponse({'status':'401','message':'Unauthorized access detected!'})     
     except:
         return JsonResponse({'status':'500','message':'Internal Server Error!'})
+
+@csrf_exempt   
+def addcart(request):
+    productuid = request.POST.get('productid')
+    useruid = request.POST.get('apikey')
+    qunti = request.POST.get('quntity')
+    product = Products.objects.filter(uniqueid=productuid)
+    user = Customers.objects.filter(apikey=useruid)
+    productname=''
+    price=''
+    username=''
+    sellerid=''
+    sellername=''
+    for x in product:
+        productname=x.name
+        price =x.price
+        sellerid = x.sellerid
+        sellername = x.sellername
+        break
+    for x in user:
+        username = x.name
+    try:
+        print(type(useruid),type(qunti))
+        cart_obj = Cart(productname=productname,productid=productuid,price=price,useruid=useruid,username=username,quantity=qunti,sellerid=sellerid,sellername=sellername)
+        cart_obj.save()
+        return JsonResponse({'status':'200','message':'cart added successfully'})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'status':'500','message':'Internal Server Error!'})
+    
+@csrf_exempt
+def showcart(request):
+    uuid = request.POST.get('useruid')
+    cart = Cart.objects.filter(useruid=uuid)
+
+    cart_serializer = CartShowSerializer(cart,many=True)
+    
+    return JsonResponse(cart_serializer.data,safe=False)
+    
+
+
+
     
 
     
