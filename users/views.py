@@ -190,10 +190,15 @@ def addcart(request):
 def showcart(request):
     uuid = request.POST.get('useruid')
     cart = Cart.objects.filter(useruid=uuid)
-
+    total  = 0
+    for x in cart:
+        total+=x.price
     cart_serializer = CartShowSerializer(cart,many=True)
-    
-    return JsonResponse(cart_serializer.data,safe=False)
+    context = {
+        'order_total':total,
+        'data':cart_serializer.data
+    }
+    return JsonResponse(context)
     
 
 
