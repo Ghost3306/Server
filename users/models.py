@@ -14,12 +14,14 @@ class Cart(models.Model):
     productname = models.CharField(max_length=255)
     productid = models.IntegerField()#from client
     price = models.IntegerField()
+    delivertcharge = models.IntegerField()
     useruid = models.CharField(max_length=255)#from client
     username = models.CharField(max_length=255)
     date = models.DateTimeField(default=datetime.today().strftime('%Y-%m-%d'))
     quantity = models.CharField(max_length=255)#from client
     sellerid = models.CharField(max_length=255)
     sellername = models.CharField(max_length=255)
+    image = models.ImageField(upload_to='',default='default.png')
 
     
 

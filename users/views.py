@@ -174,12 +174,14 @@ def addcart(request):
         price =x.price
         sellerid = x.sellerid
         sellername = x.sellername
+        image = x.image1
+        delivery = x.delivertcharge
         break
     for x in user:
         username = x.name
     try:
         print(type(useruid),type(qunti))
-        cart_obj = Cart(productname=productname,productid=productuid,price=price,useruid=useruid,username=username,quantity=qunti,sellerid=sellerid,sellername=sellername)
+        cart_obj = Cart(productname=productname,productid=productuid,price=price,useruid=useruid,username=username,quantity=qunti,sellerid=sellerid,sellername=sellername,image=image,delivertcharge=delivery)
         cart_obj.save()
         return JsonResponse({'status':'200','message':'cart added successfully'})
     except Exception as e:
@@ -191,14 +193,36 @@ def showcart(request):
     uuid = request.POST.get('useruid')
     cart = Cart.objects.filter(useruid=uuid)
     total  = 0
+    deli = 0
     for x in cart:
-        total+=x.price
+        total+=(x.price*int(x.quantity))
+        deli +=x.delivertcharge
+    
     cart_serializer = CartShowSerializer(cart,many=True)
     context = {
         'order_total':total,
-        'data':cart_serializer.data
+        'delivery':deli,
+        'data':cart_serializer.data,
+        'len':len(cart),
+        'total':total+deli
+
     }
     return JsonResponse(context)
+@csrf_exempt
+def delcart(request):
+    try:    
+        uniqueid = request.POST.get('cartid')
+        print('uniqueid',uniqueid)
+        cart = Cart.objects.filter(id=uniqueid)
+        for x in cart:
+            print(x.productname)
+        cart.delete()
+
+        return JsonResponse({'status':'200'})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'status':'403'})
+    
     
 
 
