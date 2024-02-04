@@ -6,7 +6,9 @@ from users.accessibility import gen_api_key
 from products.models import Products
 from products.serializers import ProductsViewSerializer
 from django.views.decorators.csrf import csrf_exempt
+from users.models import Cart
 import random
+
 
 @csrf_exempt
 def addproduct(request):
@@ -173,5 +175,26 @@ def searchcategory(request):
 
 
     
+@csrf_exempt
+def order_placed(request):
+    orderid = gen_api_key()
+    uuid = request.POST.get('uuid')
+    name = request.POST.get('name')
+    email = request.POST.get('email')
+    phone = request.POST.get('phone')
+    state = request.POST.get('state')
+    district = request.POST.get('district')
+    taluka = request.POST.get('takuka')
+    city = request.POST.get('city')
+    landmark = request.POST.get('landmark')
+    pincode = request.POST.get('pincode')
+    print(uuid)
+    cart = Cart.objects.filter(useruid=uuid)
+    
+    for x in cart:
+        print(x.productname)
+        sellerid = x.sellerid
+        sellername = x.sellername
+        date = x.date
 
-   
+    return JsonResponse({'key':'200'})
