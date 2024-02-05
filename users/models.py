@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import datetime
+from django.utils import timezone
 class Customers(models.Model):
     name = models.CharField(max_length=50)
     email = models.EmailField(default = 'default@gmail.com')
@@ -17,7 +17,7 @@ class Cart(models.Model):
     delivertcharge = models.IntegerField()
     useruid = models.CharField(max_length=255)#from client
     username = models.CharField(max_length=255)
-    date = models.DateTimeField(default=datetime.today().strftime('%Y-%m-%d'))
+    date = models.DateTimeField(default=timezone.now)
     quantity = models.CharField(max_length=255)#from client
     sellerid = models.CharField(max_length=255)
     sellername = models.CharField(max_length=255)

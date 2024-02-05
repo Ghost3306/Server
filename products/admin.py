@@ -8,7 +8,7 @@ class DisplayReview(admin.ModelAdmin):
     list_display= ('uid','productname','productid','reviewerid','reviwername','review','star','title')
 
 class DisplayPlacedOrders(admin.ModelAdmin):
-    list_display =('uid' ,'name' ,'email' ,'phone','state' ,'district' ,'taluka','city' ,'landmark', 'sellerid' ,'sellername','date' ,'approxdelivery' ,'payment', 'totalprice' ,'couriername','track' ,'delstatus') 
+    list_display =('uid' ,'name' ,'email' ,'phone','state' ,'district' ,'taluka','city' ,'landmark', 'sellerid' ,'sellername','date' ,'approxdelivery' ,'payment', 'totalprice' ,'couriername' ,'delstatus') 
 admin.site.register(Products,DisplayProducts)
 admin.site.register(Review,DisplayReview)
 admin.site.register(PlacedOrder,DisplayPlacedOrders)

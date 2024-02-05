@@ -7,6 +7,7 @@ from products.models import Products
 from products.serializers import ProductsViewSerializer
 from django.views.decorators.csrf import csrf_exempt
 from users.models import Cart
+from products.models import PlacedOrder
 import random
 
 
@@ -177,24 +178,52 @@ def searchcategory(request):
     
 @csrf_exempt
 def order_placed(request):
-    orderid = gen_api_key()
+    orderid = gen_api_key() #uid
+    placed = PlacedOrder.objects.filter(uid=orderid)
+    while True:
+        if len(placed)>=1:
+            orderid = gen_api_key
+        else:
+            break
+    print(orderid)
+
     uuid = request.POST.get('uuid')
     name = request.POST.get('name')
     email = request.POST.get('email')
     phone = request.POST.get('phone')
     state = request.POST.get('state')
     district = request.POST.get('district')
-    taluka = request.POST.get('takuka')
+    taluka = request.POST.get('taluka')
     city = request.POST.get('city')
     landmark = request.POST.get('landmark')
     pincode = request.POST.get('pincode')
     print(uuid)
     cart = Cart.objects.filter(useruid=uuid)
-    
+    totalprice = request.POST.get('totalprice')
+    products = {}
+    payment = request.POST.get('payment')
     for x in cart:
-        print(x.productname)
+        product = {}
+        product.update({'id':x.productid})
+        product.update({'name':x.productname})
+        product.update({'price':x.price})
+        product.update({'deli':x.delivertcharge})
+        product.update({'quantity':x.quantity})
+        products.update({x.productid:product})
+
         sellerid = x.sellerid
         sellername = x.sellername
-        date = x.date
 
-    return JsonResponse({'key':'200'})
+    print(sellerid,'seller')
+    try:
+
+        placed_order_obj = PlacedOrder(uid=orderid,uuid=uuid,name=name,email=email,phone=str(phone),state=state,district=district,taluka=taluka,city=city,landmark=landmark,pincode=pincode,sellerid=sellerid,sellername=sellername,product=products,payment=payment,totalprice=totalprice)
+        
+        placed_order_obj.save()
+        cart = Cart.objects.filter(useruid=uuid)
+        cart.delete()
+        return JsonResponse({'status':'200','msg':'order successfully placed...'})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'key':'403'})
+    

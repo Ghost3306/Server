@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.utils import timezone
 class Products(models.Model):
     uniqueid = models.IntegerField()
     name = models.CharField(max_length=255)
@@ -36,6 +36,7 @@ class Review(models.Model):
 
 class PlacedOrder(models.Model):
     uid = models.CharField(max_length=255)
+    uuid = models.CharField(max_length=255,default='0000')
     name = models.CharField(max_length=255)
     email = models.EmailField()
     phone = models.CharField(max_length=10)
@@ -47,10 +48,10 @@ class PlacedOrder(models.Model):
     pincode = models.IntegerField()
     sellerid = models.CharField(max_length=255)
     sellername = models.CharField(max_length=255)
-    date = models.DateField()
+    date = models.DateField(default=timezone.now)
     approxdelivery = models.DateField(blank=True, null=True)
+    product = models.JSONField(blank=True, null=True)
     payment = models.CharField(max_length=50)
     totalprice = models.IntegerField()
-    couriername = models.CharField(max_length=255 )
-    track = models.JSONField(blank=True, null=True)
+    couriername = models.CharField(max_length=255,default= 'courier' )
     delstatus = models.CharField(max_length=100)
