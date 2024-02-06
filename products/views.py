@@ -4,7 +4,7 @@ from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 from seller.models import Seller
 from users.accessibility import gen_api_key
 from products.models import Products
-from products.serializers import ProductsViewSerializer
+from products.serializers import ProductsViewSerializer,PlaceOrderSerializer
 from django.views.decorators.csrf import csrf_exempt
 from users.models import Cart
 from products.models import PlacedOrder
@@ -238,4 +238,17 @@ def order_placed(request):
     except Exception as e:
         print(e)
         return JsonResponse({'key':'403'})
-    
+
+@csrf_exempt  
+def yourorders(request):
+    uuid = request.POST.get('uuid')
+    placedorders = PlacedOrder.objects.filter(uuid=uuid)
+    place_serializer = PlaceOrderSerializer(placedorders,many=True)
+    return JsonResponse({'response':place_serializer.data})
+
+@csrf_exempt
+def sellerorders(request):
+    seller = request.POST.get('seller')
+    placedorders = PlacedOrder.objects.filter(sellerid=seller)
+    place_serializer = PlaceOrderSerializer(placedorders,many=True)
+    return JsonResponse({'response':place_serializer.data})

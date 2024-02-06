@@ -53,7 +53,7 @@ class PlacedOrder(models.Model):
     product = models.CharField(max_length=255)
     productid = models.CharField(max_length=255)
     price = models.IntegerField()
-    delivery = models.IntegerField()
+    delivery = models.IntegerField(default=0)
     quantity = models.IntegerField()
     payment = models.CharField(max_length=50)
     totalprice = models.IntegerField()
