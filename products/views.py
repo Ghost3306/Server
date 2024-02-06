@@ -203,23 +203,35 @@ def order_placed(request):
     products = {}
     payment = request.POST.get('payment')
     for x in cart:
-        product = {}
-        product.update({'id':x.productid})
-        product.update({'name':x.productname})
-        product.update({'price':x.price})
-        product.update({'deli':x.delivertcharge})
-        product.update({'quantity':x.quantity})
-        products.update({x.productid:product})
+        try:
+            sellerid = x.sellerid
+            sellername = x.sellername
+            placed_order_obj = PlacedOrder(uid=orderid,uuid=uuid,name=name,email=email,phone=str(phone),state=state,district=district,taluka=taluka,city=city,landmark=landmark,pincode=pincode,sellerid=sellerid,sellername=sellername,product=x.productname,productid=x.productid,delivery=x.delivertcharge,quantity=x.quantity,price=x.price,payment=payment,totalprice=totalprice)
+            
+            placed_order_obj.save()
+        except Exception as e:
+            print(e)
+        # product = {}
+        # product.update({'id':x.productid})
+        # product.update({'name':x.productname})
+        # product.update({'price':x.price})
+        # product.update({'deli':x.delivertcharge})
+        # product.update({'quantity':x.quantity})
+        # products.update({x.productid:product})
 
-        sellerid = x.sellerid
-        sellername = x.sellername
+       
 
     print(sellerid,'seller')
     try:
 
-        placed_order_obj = PlacedOrder(uid=orderid,uuid=uuid,name=name,email=email,phone=str(phone),state=state,district=district,taluka=taluka,city=city,landmark=landmark,pincode=pincode,sellerid=sellerid,sellername=sellername,product=products,payment=payment,totalprice=totalprice)
+
+# product = models.CharField(max_length=255)
+#     productid = models.CharField(max_length=255)
+#     price = models.IntegerField()
+#     delivery = models.IntegerField(default=0)
+#     quantity = models.IntegerField()
+#     payment = models.CharField(max_length=50)
         
-        placed_order_obj.save()
         cart = Cart.objects.filter(useruid=uuid)
         cart.delete()
         return JsonResponse({'status':'200','msg':'order successfully placed...'})

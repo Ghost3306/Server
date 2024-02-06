@@ -26,7 +26,7 @@ def seller(request):
         bussinessemail = request.POST.get('bussinessemail')
         phone = request.POST.get('phone')
         gst = request.POST.get('gst')
-        bussimage =request.FILES['bussimage']
+        # bussimage =request.FILES['bussimage']
 
         state =request.POST.get('state')
         district =request.POST.get('district')
@@ -43,11 +43,11 @@ def seller(request):
         ifsc = request.POST.get('ifsc')
         aadharcard = request.POST.get('aadharcard')
         password = request.POST.get('password')
-        print(bussimage)
-        seller = Seller(bussinessname=bussinessname,uniquekey=uniquekey,bussinessemail=bussinessemail,phone=phone,gst=gst,bussimage=bussimage,state=state,district=district,taluka=taluka,city=city,pincode=pincode,owneremail=owneremail,ownerphone=ownerphone,ownername=ownername,bankname=bankname,accno=accno,ifsc=ifsc,aadharcard=aadharcard,password=password)
+        # print(bussimage)
+        seller = Seller(bussinessname=bussinessname,uniquekey=uniquekey,bussinessemail=bussinessemail,phone=phone,gst=gst,state=state,district=district,taluka=taluka,city=city,pincode=pincode,owneremail=owneremail,ownerphone=ownerphone,ownername=ownername,bankname=bankname,accno=accno,ifsc=ifsc,aadharcard=aadharcard,password=password)
         seller.save()
         context = {
-            'bussinessname':bussinessname,
+            
             'uniquekey':uniquekey,
             'bussinessemail':bussinessemail,
             'phone':phone,
