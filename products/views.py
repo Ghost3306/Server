@@ -79,9 +79,28 @@ def allproduct(request):
 @csrf_exempt
 def sellersproducts(request):
     sellerid = request.POST.get('sellerapi')
+    page = request.POST.get('page', 1)
     product = Products.objects.filter(sellerid=sellerid)
-    prod_serial = ProductsViewSerializer(product,many=True)
+    
+    product_per_page = 10
+    paginator = Paginator(product,product_per_page)
+    try:
+        products = paginator.page(page)
+        print(type(products))
+    except PageNotAnInteger:
+        products = paginator.page(1)
+
+    except EmptyPage:
+        products = paginator.page(paginator.num_pages)
+    except Exception as e:
+        print(e)
+    prod_serial = ProductsViewSerializer(products,many=True)
     return JsonResponse(prod_serial.data,safe=False)
+
+
+
+    
+  
 
 
 @csrf_exempt
@@ -249,6 +268,8 @@ def yourorders(request):
 @csrf_exempt
 def sellerorders(request):
     seller = request.POST.get('seller')
+    print(seller)
     placedorders = PlacedOrder.objects.filter(sellerid=seller)
+    print(len(placedorders))
     place_serializer = PlaceOrderSerializer(placedorders,many=True)
     return JsonResponse({'response':place_serializer.data})
