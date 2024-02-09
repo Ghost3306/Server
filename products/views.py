@@ -219,13 +219,22 @@ def order_placed(request):
     print(uuid)
     cart = Cart.objects.filter(useruid=uuid)
     totalprice = request.POST.get('totalprice')
-    products = {}
+    
     payment = request.POST.get('payment')
     for x in cart:
         try:
             sellerid = x.sellerid
             sellername = x.sellername
-            placed_order_obj = PlacedOrder(uid=orderid,uuid=uuid,name=name,email=email,phone=str(phone),state=state,district=district,taluka=taluka,city=city,landmark=landmark,pincode=pincode,sellerid=sellerid,sellername=sellername,product=x.productname,productid=x.productid,delivery=x.delivertcharge,quantity=x.quantity,price=x.price,payment=payment,totalprice=totalprice)
+            try:
+                print(x.productid)
+                product = Products.objects.filter(uniqueid=x.productid)
+                print(len(product))
+            except Exception as e:
+                print(e)
+            for u in product:
+                image = u.image1
+                break
+            placed_order_obj = PlacedOrder(uid=orderid,uuid=uuid,name=name,email=email,phone=str(phone),state=state,district=district,taluka=taluka,city=city,landmark=landmark,pincode=pincode,sellerid=sellerid,sellername=sellername,product=x.productname,productid=x.productid,delivery=x.delivertcharge,quantity=x.quantity,price=x.price,payment=payment,totalprice=totalprice,productimage=image)
             
             placed_order_obj.save()
         except Exception as e:
@@ -261,7 +270,7 @@ def order_placed(request):
 @csrf_exempt  
 def yourorders(request):
     uuid = request.POST.get('uuid')
-    placedorders = PlacedOrder.objects.filter(uuid=uuid)
+    placedorders = PlacedOrder.objects.filter(uuid=uuid )
     place_serializer = PlaceOrderSerializer(placedorders,many=True)
     return JsonResponse({'response':place_serializer.data})
 

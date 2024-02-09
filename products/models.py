@@ -51,6 +51,7 @@ class PlacedOrder(models.Model):
     date = models.DateField(default=timezone.now)
     approxdelivery = models.DateField(blank=True, null=True)
     product = models.CharField(max_length=255)
+    productimage = models.ImageField(default='abc.jpg')
     productid = models.CharField(max_length=255)
     price = models.IntegerField()
     delivery = models.IntegerField(default=0)
@@ -58,4 +59,4 @@ class PlacedOrder(models.Model):
     payment = models.CharField(max_length=50)
     totalprice = models.IntegerField()
     couriername = models.CharField(max_length=255,default= 'courier' )
-    delstatus = models.CharField(max_length=100)
+    delstatus = models.CharField(max_length=100, default='None')
