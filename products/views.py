@@ -197,14 +197,7 @@ def searchcategory(request):
     
 @csrf_exempt
 def order_placed(request):
-    orderid = gen_api_key() #uid
-    placed = PlacedOrder.objects.filter(uid=orderid)
-    while True:
-        if len(placed)>=1:
-            orderid = gen_api_key
-        else:
-            break
-    print(orderid)
+    
 
     uuid = request.POST.get('uuid')
     name = request.POST.get('name')
@@ -234,31 +227,25 @@ def order_placed(request):
             for u in product:
                 image = u.image1
                 break
+            orderid = gen_api_key() #uid
+            placed = PlacedOrder.objects.filter(uid=orderid)
+            while True:
+                if len(placed)>=1:
+                    orderid = gen_api_key
+                else:
+                    break
+            print(orderid)
             placed_order_obj = PlacedOrder(uid=orderid,uuid=uuid,name=name,email=email,phone=str(phone),state=state,district=district,taluka=taluka,city=city,landmark=landmark,pincode=pincode,sellerid=sellerid,sellername=sellername,product=x.productname,productid=x.productid,delivery=x.delivertcharge,quantity=x.quantity,price=x.price,payment=payment,totalprice=totalprice,productimage=image)
             
             placed_order_obj.save()
         except Exception as e:
             print(e)
-        # product = {}
-        # product.update({'id':x.productid})
-        # product.update({'name':x.productname})
-        # product.update({'price':x.price})
-        # product.update({'deli':x.delivertcharge})
-        # product.update({'quantity':x.quantity})
-        # products.update({x.productid:product})
+        
 
        
 
     print(sellerid,'seller')
     try:
-
-
-# product = models.CharField(max_length=255)
-#     productid = models.CharField(max_length=255)
-#     price = models.IntegerField()
-#     delivery = models.IntegerField(default=0)
-#     quantity = models.IntegerField()
-#     payment = models.CharField(max_length=50)
         
         cart = Cart.objects.filter(useruid=uuid)
         cart.delete()
@@ -282,3 +269,16 @@ def sellerorders(request):
     print(len(placedorders))
     place_serializer = PlaceOrderSerializer(placedorders,many=True)
     return JsonResponse({'response':place_serializer.data})
+
+@csrf_exempt
+def cancelorder(request):
+    uid = request.POST.get('uid')
+    print(uid)
+    try:
+        placedorders = PlacedOrder.objects.get(uid=uid)
+        placedorders.delstatus='cancelled'
+        placedorders.save()
+        return JsonResponse({'status':'200'})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'status':'500'})

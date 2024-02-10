@@ -15,5 +15,6 @@ urlpatterns = [
     path('orderplaced/',views.order_placed,name='orderplaced'),
     path('yourordes/',views.yourorders,name='yourorders'),
     path('sellerorders/',views.sellerorders,name='sellerorders'),
+    path('cancelorder/',views.cancelorder,name='canelorder')
 
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
