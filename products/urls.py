@@ -18,5 +18,6 @@ urlpatterns = [
     path('cancelorder/',views.cancelorder,name='canelorder'),
     path('placeorder/',views.placeorder,name='placeorder'),
     path('sellerordersNone/',views.sellerordersNone,name='sellerordersNone'),
-
+    path('sellerhistory/',views.sellerhistory,name='sellerhistory'),
+    path('sellerallproduct/',views.sellerallproduct,name='sellerallproduct'),
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

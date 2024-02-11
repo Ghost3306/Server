@@ -273,7 +273,7 @@ def sellerorders(request):
 def sellerordersNone(request):
     seller = request.POST.get('seller')
     print(seller)
-    placedorders = PlacedOrder.objects.filter(sellerid=seller,delstatus='None')
+    placedorders = PlacedOrder.objects.filter(sellerid=seller,delstatus__in=['None','accept','dispatching'])
     print(len(placedorders))
     place_serializer = PlaceOrderSerializer(placedorders,many=True)
     return JsonResponse({'response':place_serializer.data})
@@ -297,3 +297,21 @@ def placeorder(request):
     placeorder= PlacedOrder.objects.filter(uid=uid)
     place = PlaceOrderSerializer(placeorder,many=True)
     return JsonResponse(place.data,safe=False)
+
+@csrf_exempt
+def sellerhistory(request):
+    seller = request.POST.get('seller')
+    print(seller)
+    placedorders = PlacedOrder.objects.filter(sellerid=seller,delstatus='delivered')
+    print(len(placedorders))
+    place_serializer = PlaceOrderSerializer(placedorders,many=True)
+    return JsonResponse({'response':place_serializer.data})
+
+@csrf_exempt
+def sellerallproduct(request):
+    seller = request.POST.get('seller')
+    print(seller)
+    placedorders = PlacedOrder.objects.filter(sellerid=seller)
+    print(len(placedorders))
+    place_serializer = PlaceOrderSerializer(placedorders,many=True)
+    return JsonResponse({'response':place_serializer.data})
