@@ -15,6 +15,8 @@ urlpatterns = [
     path('orderplaced/',views.order_placed,name='orderplaced'),
     path('yourordes/',views.yourorders,name='yourorders'),
     path('sellerorders/',views.sellerorders,name='sellerorders'),
-    path('cancelorder/',views.cancelorder,name='canelorder')
+    path('cancelorder/',views.cancelorder,name='canelorder'),
+    path('placeorder/',views.placeorder,name='placeorder'),
+    path('sellerordersNone/',views.sellerordersNone,name='sellerordersNone'),
 
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

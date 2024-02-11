@@ -269,6 +269,14 @@ def sellerorders(request):
     print(len(placedorders))
     place_serializer = PlaceOrderSerializer(placedorders,many=True)
     return JsonResponse({'response':place_serializer.data})
+@csrf_exempt
+def sellerordersNone(request):
+    seller = request.POST.get('seller')
+    print(seller)
+    placedorders = PlacedOrder.objects.filter(sellerid=seller,delstatus='None')
+    print(len(placedorders))
+    place_serializer = PlaceOrderSerializer(placedorders,many=True)
+    return JsonResponse({'response':place_serializer.data})
 
 @csrf_exempt
 def cancelorder(request):
@@ -282,3 +290,10 @@ def cancelorder(request):
     except Exception as e:
         print(e)
         return JsonResponse({'status':'500'})
+    
+@csrf_exempt
+def placeorder(request):
+    uid= request.POST.get('uid')
+    placeorder= PlacedOrder.objects.filter(uid=uid)
+    place = PlaceOrderSerializer(placeorder,many=True)
+    return JsonResponse(place.data,safe=False)
