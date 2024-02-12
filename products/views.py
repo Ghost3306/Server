@@ -315,3 +315,24 @@ def sellerallproduct(request):
     print(len(placedorders))
     place_serializer = PlaceOrderSerializer(placedorders,many=True)
     return JsonResponse({'response':place_serializer.data})
+
+@csrf_exempt
+def changestate(request):
+    try:
+        state = request.POST.get('state')
+        uid = request.POST.get('uid')
+        courier = request.POST.get('courier')
+        # print(sellerapi)
+        if courier==None:
+            placeorder = PlacedOrder.objects.get(uid=uid)
+            placeorder.delstatus=state
+            placeorder.save()
+        else:
+            placeorder = PlacedOrder.objects.get(uid=uid)
+            placeorder.delstatus=state
+            placeorder.couriername=courier
+            placeorder.save()
+        return JsonResponse({'status':'200'})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'status':'500'})
