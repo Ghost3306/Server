@@ -9,8 +9,8 @@ from users.models import Cart
 from django.views.decorators.csrf import csrf_exempt
 from products.models import Products
 from seller.models import Seller
-from users.models import Cart
-from users.serializers import CartShowSerializer
+from users.models import Cart,SaveLater
+from users.serializers import CartShowSerializer,SaveShowSerializer
 
 @csrf_exempt
 def customers(request):
@@ -180,7 +180,7 @@ def addcart(request):
     for x in user:
         username = x.name
     try:
-        print(type(useruid),type(qunti))
+        # print(type(useruid),type(qunti))
         cart_obj = Cart(productname=productname,productid=productuid,price=price,useruid=useruid,username=username,quantity=qunti,sellerid=sellerid,sellername=sellername,image=image,delivertcharge=delivery)
         cart_obj.save()
         return JsonResponse({'status':'200','message':'cart added successfully'})
@@ -223,7 +223,42 @@ def delcart(request):
         print(e)
         return JsonResponse({'status':'403'})
     
-    
+@csrf_exempt
+def addsavelater(request):
+    id = request.POST.get('id')
+    try:
+        cart_item = Cart.objects.get(id=id)
+        print(cart_item.productid)
+        savelater_obj = SaveLater(productname=cart_item.productname,productid=cart_item.productid,price=cart_item.price,useruid=cart_item.useruid,username=cart_item.username,quantity=cart_item.quantity,sellerid=cart_item.sellerid,sellername=cart_item.sellername,image=cart_item.image,delivertcharge=cart_item.delivertcharge)
+        savelater_obj.save()
+        cart_item = Cart.objects.get(id=id)
+        cart_item.delete()
+        return JsonResponse({'status':'200'})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'status':'403'})
+
+@csrf_exempt
+def showsavelater(request):
+    uuid = request.POST.get('uuid')
+    save = SaveLater.objects.filter(useruid=uuid)
+    saveserializer = SaveShowSerializer(save,many=True)
+    return JsonResponse(saveserializer.data,safe=False)
+
+@csrf_exempt 
+def delsavelater(request):
+    try:    
+        id = request.POST.get('id')
+        print('uniqueid',id)
+        cart = SaveLater.objects.filter(id=id)
+        for x in cart:
+            print(x.productname)
+        cart.delete()
+
+        return JsonResponse({'status':'200'})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'status':'403'})
 
 
 

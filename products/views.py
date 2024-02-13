@@ -9,8 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from users.models import Cart
 from products.models import PlacedOrder
 import random
-
-
+from datetime import date
 @csrf_exempt
 def addproduct(request):
     sellerid = request.POST.get('sellerid')
@@ -212,7 +211,7 @@ def order_placed(request):
     print(uuid)
     cart = Cart.objects.filter(useruid=uuid)
     totalprice = request.POST.get('totalprice')
-    
+    dat = date.today()
     payment = request.POST.get('payment')
     for x in cart:
         try:
@@ -235,7 +234,7 @@ def order_placed(request):
                 else:
                     break
             print(orderid)
-            placed_order_obj = PlacedOrder(uid=orderid,uuid=uuid,name=name,email=email,phone=str(phone),state=state,district=district,taluka=taluka,city=city,landmark=landmark,pincode=pincode,sellerid=sellerid,sellername=sellername,product=x.productname,productid=x.productid,delivery=x.delivertcharge,quantity=x.quantity,price=x.price,payment=payment,totalprice=totalprice,productimage=image)
+            placed_order_obj = PlacedOrder(uid=orderid,uuid=uuid,name=name,email=email,phone=str(phone),state=state,district=district,taluka=taluka,city=city,landmark=landmark,pincode=pincode,sellerid=sellerid,sellername=sellername,product=x.productname,productid=x.productid,delivery=x.delivertcharge,quantity=x.quantity,date=dat,price=x.price,payment=payment,totalprice=totalprice,productimage=image)
             
             placed_order_obj.save()
         except Exception as e:
@@ -254,10 +253,50 @@ def order_placed(request):
         print(e)
         return JsonResponse({'key':'403'})
 
+@csrf_exempt
+def buy_order_placed(request):
+    uuid = request.POST.get('uuid')
+    name = request.POST.get('name')
+    email = request.POST.get('email')
+    phone = request.POST.get('phone')
+    state = request.POST.get('state')
+    district = request.POST.get('district')
+    taluka = request.POST.get('taluka')
+    city = request.POST.get('city')
+    landmark = request.POST.get('landmark')
+    pincode = request.POST.get('pincode')
+    quantity = request.POST.get('quantity')
+    productid = request.POST.get('productid')
+    payment = request.POST.get('payment')
+    dat = request.POST.get('date')
+    print(dat)
+    product = Products.objects.get(uniqueid=productid)
+    print(uuid)
+    orderid = gen_api_key()
+    placed = PlacedOrder.objects.filter(uid=orderid)
+    while True:
+        if len(placed)>=1:
+            orderid = gen_api_key
+        else:
+            break
+    total_price = (int(product.price)*int(quantity))+int(product.delivertcharge)
+    placed_order_obj = PlacedOrder(uid=orderid,uuid=uuid,name=name,email=email,phone=str(phone),state=state,district=district,taluka=taluka,city=city,landmark=landmark,pincode=pincode,sellerid=product.sellerid,sellername=product.sellername,date=dat,product=product.name,productid=productid,delivery=product.delivertcharge,quantity=quantity,price=product.price,payment=payment,totalprice=total_price,productimage=product.image1)
+            
+    placed_order_obj.save()
+    return JsonResponse({'status':'200','msg':'order successfully placed...'})
+   
+        
+
+     
+
+
+
+
+
 @csrf_exempt  
 def yourorders(request):
     uuid = request.POST.get('uuid')
-    placedorders = PlacedOrder.objects.filter(uuid=uuid )
+    placedorders = PlacedOrder.objects.filter(uuid=uuid ).order_by('-id')
     place_serializer = PlaceOrderSerializer(placedorders,many=True)
     return JsonResponse({'response':place_serializer.data})
 
@@ -322,15 +361,18 @@ def changestate(request):
         state = request.POST.get('state')
         uid = request.POST.get('uid')
         courier = request.POST.get('courier')
+        datenow = date.today()
         # print(sellerapi)
         if courier==None:
             placeorder = PlacedOrder.objects.get(uid=uid)
             placeorder.delstatus=state
+            placeorder.approxdelivery=datenow
             placeorder.save()
         else:
             placeorder = PlacedOrder.objects.get(uid=uid)
             placeorder.delstatus=state
             placeorder.couriername=courier
+            placeorder.approxdelivery=datenow
             placeorder.save()
         return JsonResponse({'status':'200'})
     except Exception as e:

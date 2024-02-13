@@ -48,7 +48,7 @@ class PlacedOrder(models.Model):
     pincode = models.IntegerField()
     sellerid = models.CharField(max_length=255)
     sellername = models.CharField(max_length=255)
-    date = models.DateField(default=timezone.now)
+    date = models.DateField()
     approxdelivery = models.DateField(blank=True, null=True)
     product = models.CharField(max_length=255)
     productimage = models.ImageField(default='abc.jpg')

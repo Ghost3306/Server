@@ -10,4 +10,7 @@ urlpatterns = [
     path('addcart/',views.addcart,name='addcart'),
     path('cart/',views.showcart,name='cart'),
     path('delcart/',views.delcart,name='delcart'),
+    path('savelater/',views.addsavelater,name='savelater'),
+    path('savelatershow/',views.showsavelater,name='savelatershow'),
+    path('delsave/',views.delsavelater,name='delsave')
 ]
