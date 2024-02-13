@@ -340,18 +340,18 @@ def placeorder(request):
 @csrf_exempt
 def sellerhistory(request):
     seller = request.POST.get('seller')
-    print(seller)
+    # print(seller)
     placedorders = PlacedOrder.objects.filter(sellerid=seller,delstatus='delivered')
-    print(len(placedorders))
+    # print(len(placedorders))
     place_serializer = PlaceOrderSerializer(placedorders,many=True)
     return JsonResponse({'response':place_serializer.data})
 
 @csrf_exempt
 def sellerallproduct(request):
     seller = request.POST.get('seller')
-    print(seller)
+    # print(seller)
     placedorders = PlacedOrder.objects.filter(sellerid=seller)
-    print(len(placedorders))
+    # print(len(placedorders))
     place_serializer = PlaceOrderSerializer(placedorders,many=True)
     return JsonResponse({'response':place_serializer.data})
 
@@ -378,3 +378,21 @@ def changestate(request):
     except Exception as e:
         print(e)
         return JsonResponse({'status':'500'})
+
+@csrf_exempt
+def search(request):
+    name = request.POST.get('name')
+    seller = request.POST.get('seller')
+    forwhat = request.POST.get('forwhat')
+    print(name,seller,forwhat)
+    if forwhat=='delivered':
+        place = PlacedOrder.objects.filter(sellerid=seller,product__icontains=name,delstatus__icontains='delivered')
+        print(len(place))
+        plcaserializer = PlaceOrderSerializer(place,many=True)
+        return JsonResponse({'response':plcaserializer.data})
+    elif forwhat=='all':
+        place = PlacedOrder.objects.filter(sellerid=seller,product__icontains=name,delstatus__in=['None','accept','dispatching','intransit'])
+        plcaserializer = PlaceOrderSerializer(place,many=True)
+        return JsonResponse({'response':plcaserializer.data})
+    else:
+        return JsonResponse({'status':'404'})
