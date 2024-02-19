@@ -46,9 +46,26 @@ def addproduct(request):
     image3 = request.FILES['image3']
     image4 = request.FILES['image4']
     image5 = request.FILES['image5']
+    color = request.POST.get('color')
+    warrenty = request.POST.get('warrenty')
+    country = request.POST.get('country')
+    returndays = request.POST.get('returndays')
+    special = request.POST.get('special')
+    payondel= request.POST.get('payondel')
+    if payondel=='true':
+        payondel=True
+    else:
+        payondel=False
+   
+    if returndays is None:
+        returndays = "None"
+    if special is None:
+        special= "None"
+
+    print(color,warrenty,country ,payondel,special,returndays)
     print(image1,image2,image3,image4,image5)
     try:
-        seller_obj = Products(uniqueid= uniqueid,name=name, price=price, description=descrription,delivertcharge=delivertcharge,width=width,height=height,length=length,sellerid=sellerid,sellername=seller_name,state=seller_state,district=seller_district,selleremail=sellerr_email, category=category,image1=image1,image2=image2,image3=image3,image4=image4, image5=image5)
+        seller_obj = Products(uniqueid= uniqueid,name=name, price=price, description=descrription,delivertcharge=delivertcharge,width=width,height=height,length=length,sellerid=sellerid,sellername=seller_name,state=seller_state,district=seller_district,selleremail=sellerr_email, category=category,image1=image1,image2=image2,image3=image3,image4=image4, image5=image5,color=color,country=country,returndays=returndays,warrenty=warrenty,payondel=payondel,special=special)
         seller_obj.save()
         return JsonResponse({'status':'200','message':'product added successful'})
     except Exception as e:
