@@ -150,6 +150,21 @@ def updateproduct(request):
         image3 = request.FILES['image3']
         image4 = request.FILES['image4']
         image5 = request.FILES['image5']
+        color = request.POST.get('color')
+        warrenty = request.POST.get('warrenty')
+        country = request.POST.get('country')
+        returndays = request.POST.get('returndays')
+        special = request.POST.get('special')
+        payondel= request.POST.get('payondel')
+        if payondel=='true':
+            payondel=True
+        else:
+            payondel=False
+   
+        if returndays is None:
+            returndays = "None"
+        if special is None:
+            special= "None"
 
         print(uniqueid,name)
         products = Products.objects.get(uniqueid=uniqueid)
@@ -166,6 +181,12 @@ def updateproduct(request):
         products.image3 = image3
         products.image4 = image4
         products.image5 = image5
+        products.color=color
+        products.country=country
+        products.warrenty = warrenty
+        products.returndays=returndays
+        products.special=special
+        products.payondel=payondel
         products.save()
         return JsonResponse({'status':'200'})
     except:
