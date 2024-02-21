@@ -26,4 +26,9 @@ class Seller(models.Model):
     password = models.TextField()
 
 
+class SellerBanner(models.Model):
+    sellerid = models.CharField(max_length=40)
+    banner = models.ImageField(upload_to='')
+
+
 

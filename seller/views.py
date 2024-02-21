@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from seller.serializers import SellerShowSerializer
-from seller.models import Seller
+from seller.serializers import SellerShowSerializer,SellerBannerShowSerializer
+from seller.models import Seller,SellerBanner
 from users.accessibility import gen_api_key
 from django.core.mail import BadHeaderError, send_mail
 from django.conf import settings
@@ -181,5 +181,39 @@ def send_otp(request):
     else:    
         return JsonResponse({'status':'400','message':'Invalid email address....Please reenter email!',})
     
+@csrf_exempt
+def addbanner(request):
+    sellerid = request.POST.get('sellerid')
+    if request.method=='POST':
+        
+        banner = request.FILES['banner']
+        try:
+            banner_obj = SellerBanner(sellerid=sellerid,banner=banner)
+            banner_obj.save()
+            return JsonResponse({'status':'200','msg':'Banner saved successfully'})
+        except:
+            return JsonResponse({'status':'500','msg':'Internal Server Error'})
     
+    sellerbanner = SellerBanner.objects.filter(sellerid=sellerid)
+    sellerbannerserializer = SellerBannerShowSerializer(sellerbanner,many=True)
+    return JsonResponse({'banners':sellerbannerserializer.data})
+
+@csrf_exempt
+def sellerbanner(request):
+    try:
+        sellerid = request.POST.get('sellerid')
+        sellerbanner = SellerBanner.objects.filter(sellerid=sellerid).order_by('-id')
+        sellerbannerserializer = SellerBannerShowSerializer(sellerbanner,many=True)
+        return JsonResponse({'banners':sellerbannerserializer.data})
+    except:
+        return JsonResponse({'banners':None})
     
+@csrf_exempt
+def deletebanner(request):
+    try:
+        id = request.POST.get('id')
+        banner = SellerBanner.objects.filter(id = id)
+        banner.delete()
+        return JsonResponse({'msg':'Banner deleted successfully'})
+    except:
+        return JsonResponse({'msg':'Banner deleted failed'})
