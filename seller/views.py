@@ -217,3 +217,9 @@ def deletebanner(request):
         return JsonResponse({'msg':'Banner deleted successfully'})
     except:
         return JsonResponse({'msg':'Banner deleted failed'})
+
+@csrf_exempt
+def showbanner(request):
+    banner = SellerBanner.objects.all().order_by('?')[:4]
+    banner_ser = SellerBannerShowSerializer(banner,many=True)
+    return JsonResponse({'banners':banner_ser.data})

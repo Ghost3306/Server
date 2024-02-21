@@ -11,5 +11,6 @@ urlpatterns = [
     path('sendotp/',views.send_otp,name='sendotp'),
     path('banner/',views.addbanner,name='banner'),
     path('allbanner/',views.sellerbanner,name='allbanner'),
-    path('deletebanner/',views.deletebanner,name='deletebanner')
+    path('deletebanner/',views.deletebanner,name='deletebanner'),
+    path('showbanner/',views.showbanner,name='showbanner')
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
