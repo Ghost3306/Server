@@ -4,10 +4,10 @@ from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 from seller.models import Seller
 from users.accessibility import gen_api_key
 from products.models import Products
-from products.serializers import ProductsViewSerializer,PlaceOrderSerializer
+from products.serializers import ProductsViewSerializer,PlaceOrderSerializer,ReviewSerializer
 from django.views.decorators.csrf import csrf_exempt
 from users.models import Cart
-from products.models import PlacedOrder
+from products.models import PlacedOrder,Review
 import random
 from datetime import date
 @csrf_exempt
@@ -434,3 +434,45 @@ def search(request):
         return JsonResponse({'response':plcaserializer.data})
     else:
         return JsonResponse({'status':'404'})
+
+@csrf_exempt   
+def addreview(request):
+    try:
+        placeid = request.POST.get('placeid')
+        productid = request.POST.get('productid')
+        productname =request.POST.get('productname')
+        reviewerid = request.POST.get('reviewerid')
+        reviwername= request.POST.get('reviwername')
+        review= request.POST.get('review')
+        star= request.POST.get('star')
+        title= request.POST.get('title')
+        print(placeid,productid,productname,reviewerid,reviwername,review,star,title)
+        review_obj = Review(uid=placeid,productname = productname,productid=productid,reviewerid=reviewerid,reviwername=reviwername,review=review,star=star,title=title)
+        review_obj.save()
+
+        reviewes= Review.objects.filter(productid=productid)
+        num_star = 0
+        len_star = len(reviewes)
+        for x in reviewes:
+            num_star+=x.star
+        avg_star = int(num_star/len_star)
+        product =Products.objects.get(uniqueid=productid)
+        product.len_review = len_star
+        product.rating = avg_star
+        product.save()
+
+
+        place_obj = PlacedOrder.objects.get(uid=placeid)
+        place_obj.reviewstatus = 'done'
+        place_obj.save()
+        return JsonResponse({'status':'200','msg':'Review submitted'})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'status':'500'})
+    
+@csrf_exempt
+def getreviewlist(request):
+    userapi = request.POST.get('apikey')
+    placeorder_obj = PlacedOrder.objects.filter(uuid = userapi,delstatus='delivered',reviewstatus='notdone')
+    place_serial = PlaceOrderSerializer(placeorder_obj,many=True)
+    return JsonResponse({'review':place_serial.data})

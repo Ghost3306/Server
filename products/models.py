@@ -32,7 +32,7 @@ class Products(models.Model):
 
 
 class Review(models.Model):
-    uid = models.IntegerField()
+    uid = models.CharField(max_length=255,default='default')
     productname = models.CharField(max_length=255)
     productid = models.IntegerField()
     reviewerid = models.CharField(max_length=255)
@@ -68,3 +68,4 @@ class PlacedOrder(models.Model):
         totalprice = models.IntegerField()
         couriername = models.CharField(max_length=255,default= 'courier' )
         delstatus = models.CharField(max_length=100, default='None')
+        reviewstatus = models.CharField(max_length=15,default='notdone')
