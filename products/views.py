@@ -211,6 +211,74 @@ def searchproduct(request):
     prodserializer = ProductsViewSerializer(product,many=True)
     return JsonResponse(prodserializer.data,safe=False)
 
+
+@csrf_exempt  
+def searchproductbyprice(request):
+    inputtext = request.POST.get('input')
+    price =request.POST.get('price')
+    products = Products.objects.filter(name__icontains=inputtext).order_by(price)
+    page = request.POST.get('page', 1)
+
+    product_per_page = 10
+    paginator = Paginator(products,product_per_page)
+    try:
+        product = paginator.page(page)
+    except PageNotAnInteger:
+        product = paginator.page(1)
+
+    except EmptyPage:
+        product = paginator.page(paginator.num_pages)
+  
+    prodserializer = ProductsViewSerializer(product,many=True)
+    return JsonResponse(prodserializer.data,safe=False)
+
+
+
+@csrf_exempt  
+def searchproductbyrate(request):
+    inputtext = request.POST.get('input')
+    rate =request.POST.get('rate')
+    products = Products.objects.filter(name__icontains=inputtext).order_by(rate)
+    page = request.POST.get('page', 1)
+
+    product_per_page = 10
+    paginator = Paginator(products,product_per_page)
+    try:
+        product = paginator.page(page)
+    except PageNotAnInteger:
+        product = paginator.page(1)
+
+    except EmptyPage:
+        product = paginator.page(paginator.num_pages)
+  
+    prodserializer = ProductsViewSerializer(product,many=True)
+    return JsonResponse(prodserializer.data,safe=False)
+
+
+
+@csrf_exempt  
+def searchproductbynorate(request):
+    inputtext = request.POST.get('input')
+    norate =request.POST.get('norate')
+    products = Products.objects.filter(name__icontains=inputtext).order_by(norate)
+    page = request.POST.get('page', 1)
+
+    product_per_page = 10
+    paginator = Paginator(products,product_per_page)
+    try:
+        product = paginator.page(page)
+    except PageNotAnInteger:
+        product = paginator.page(1)
+
+    except EmptyPage:
+        product = paginator.page(paginator.num_pages)
+  
+    prodserializer = ProductsViewSerializer(product,many=True)
+    return JsonResponse(prodserializer.data,safe=False)
+
+
+
+
 @csrf_exempt  
 def searchcategory(request):
     inputtext = request.POST.get('input')
@@ -350,7 +418,7 @@ def sellerorders(request):
 def sellerordersNone(request):
     seller = request.POST.get('seller')
     print(seller)
-    placedorders = PlacedOrder.objects.filter(sellerid=seller,delstatus__in=['None','accept','dispatching'])
+    placedorders = PlacedOrder.objects.filter(sellerid=seller,delstatus__in=['None','accept','dispatching','intransit'])
     print(len(placedorders))
     place_serializer = PlaceOrderSerializer(placedorders,many=True)
     return JsonResponse({'response':place_serializer.data})
@@ -476,3 +544,10 @@ def getreviewlist(request):
     placeorder_obj = PlacedOrder.objects.filter(uuid = userapi,delstatus='delivered',reviewstatus='notdone')
     place_serial = PlaceOrderSerializer(placeorder_obj,many=True)
     return JsonResponse({'review':place_serial.data})
+
+@csrf_exempt
+def getproductreviews(request):
+    productid = request.POST.get('prodid')
+    reviews = Review.objects.filter(productid=productid)
+    review_serial = ReviewSerializer(reviews,many=True)
+    return JsonResponse({'review':review_serial.data})
