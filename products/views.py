@@ -375,9 +375,9 @@ def buy_order_placed(request):
     productid = request.POST.get('productid')
     payment = request.POST.get('payment')
     dat = request.POST.get('date')
-    print(dat)
+    print(productid)
     product = Products.objects.get(uniqueid=productid)
-    print(uuid)
+    
     orderid = gen_api_key()
     placed = PlacedOrder.objects.filter(uid=orderid)
     while True:
@@ -392,7 +392,7 @@ def buy_order_placed(request):
         placed_order_obj.save()
         return JsonResponse({'status':'200','msg':'order successfully placed...'})
     except Exception as e:
-        print(e)
+        raise Exception
         return JsonResponse({'status':'400','msg':'order failed to placed...'})
     
    
