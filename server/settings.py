@@ -24,7 +24,8 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = config('EMAIL')
 EMAIL_HOST_PASSWORD = config('PASSWORD')
-
+RAZORPAY_KEY_ID = config('RAZORPAY_KEY_ID')
+RAZORPAY_SECRET_ID = config('RAZORPAY_SECRET_ID')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -50,7 +51,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'seller',
-    'products'
+    'products',
+    'razorpaygate',
 ]
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -160,3 +162,4 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+

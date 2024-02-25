@@ -21,5 +21,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/',include('users.urls')),
     path('seller/',include('seller.urls')),
-    path('products/',include('products.urls'))
+    path('products/',include('products.urls')),
+    path('payment/',include('razorpaygate.urls'))
+    
 ]

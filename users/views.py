@@ -200,11 +200,11 @@ def showcart(request):
     
     cart_serializer = CartShowSerializer(cart,many=True)
     context = {
-        'order_total':total,
+        'order_total':int(total),
         'delivery':deli,
         'data':cart_serializer.data,
         'len':len(cart),
-        'total':total+deli
+        'total':int(total+deli)
 
     }
     return JsonResponse(context)

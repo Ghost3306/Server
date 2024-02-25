@@ -349,7 +349,7 @@ def order_placed(request):
 
        
 
-    print(sellerid,'seller')
+       
     try:
         
         cart = Cart.objects.filter(useruid=uuid)
