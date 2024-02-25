@@ -11,7 +11,7 @@ def create_order(request):
     if request.method=='POST':
         amount = int(request.POST.get('amount'))
         currency=request.POST.get('currency')
-        print('cred',settings.RAZORPAY_KEY_ID,settings.RAZORPAY_SECRET_ID)
+       
         
         try:
             order_response = rz.create_order(amount=amount,currency=currency)
@@ -29,7 +29,7 @@ def complete_order(request):
         amount=int(request.POST.get('amount'))
         userid = request.POST.get('userid')
         sellerid =request.POST.get('sellerid')
-        print(order_id,payment_id,signature)
+        
         try:
             rz.verify_payment(
                 razorpay_order_id=order_id,

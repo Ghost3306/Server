@@ -385,11 +385,16 @@ def buy_order_placed(request):
             orderid = gen_api_key
         else:
             break
-    total_price = (int(product.price)*int(quantity))+int(product.delivertcharge)
-    placed_order_obj = PlacedOrder(uid=orderid,uuid=uuid,name=name,email=email,phone=str(phone),state=state,district=district,taluka=taluka,city=city,landmark=landmark,pincode=pincode,sellerid=product.sellerid,sellername=product.sellername,date=dat,product=product.name,productid=productid,delivery=product.delivertcharge,quantity=quantity,price=product.price,payment=payment,totalprice=total_price,productimage=product.image1)
+    try:
+        total_price = (int(product.price)*int(quantity))+int(product.delivertcharge)
+        placed_order_obj = PlacedOrder(uid=orderid,uuid=uuid,name=name,email=email,phone=str(phone),state=state,district=district,taluka=taluka,city=city,landmark=landmark,pincode=pincode,sellerid=product.sellerid,sellername=product.sellername,date=dat,product=product.name,productid=productid,delivery=product.delivertcharge,quantity=quantity,price=product.price,payment=payment,totalprice=total_price,productimage=product.image1)
             
-    placed_order_obj.save()
-    return JsonResponse({'status':'200','msg':'order successfully placed...'})
+        placed_order_obj.save()
+        return JsonResponse({'status':'200','msg':'order successfully placed...'})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'status':'400','msg':'order failed to placed...'})
+    
    
         
 
