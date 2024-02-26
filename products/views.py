@@ -10,6 +10,7 @@ from users.models import Cart
 from products.models import PlacedOrder,Review
 import random
 from datetime import date
+from products.main import send_dispatch_mail
 @csrf_exempt
 def addproduct(request):
     sellerid = request.POST.get('sellerid')
@@ -319,6 +320,10 @@ def order_placed(request):
     totalprice = request.POST.get('totalprice')
     dat = date.today()
     payment = request.POST.get('payment')
+
+
+
+
     for x in cart:
         try:
             sellerid = x.sellerid
@@ -343,6 +348,7 @@ def order_placed(request):
             placed_order_obj = PlacedOrder(uid=orderid,uuid=uuid,name=name,email=email,phone=str(phone),state=state,district=district,taluka=taluka,city=city,landmark=landmark,pincode=pincode,sellerid=sellerid,sellername=sellername,product=x.productname,productid=x.productid,delivery=x.delivertcharge,quantity=x.quantity,date=dat,price=x.price,payment=payment,totalprice=totalprice,productimage=image)
             
             placed_order_obj.save()
+            
         except Exception as e:
             print(e)
         
@@ -392,7 +398,7 @@ def buy_order_placed(request):
         placed_order_obj.save()
         return JsonResponse({'status':'200','msg':'order successfully placed...'})
     except Exception as e:
-        raise Exception
+        # raise Exception
         return JsonResponse({'status':'400','msg':'order failed to placed...'})
     
    
@@ -479,12 +485,18 @@ def changestate(request):
             placeorder.delstatus=state
             placeorder.approxdelivery=datenow
             placeorder.save()
+            print('1',state)
+            if state=='intransit':
+                send_dispatch_mail(placeorder.product, placeorder.quantity, placeorder.price, placeorder.id, placeorder.uid, placeorder.couriername,placeorder.sellername,placeorder.uuid,placeorder.delivery)
         else:
             placeorder = PlacedOrder.objects.get(uid=uid)
             placeorder.delstatus=state
             placeorder.couriername=courier
             placeorder.approxdelivery=datenow
             placeorder.save()
+            print('2',state)
+            if state=='intransit':
+                send_dispatch_mail(placeorder.product, placeorder.quantity, placeorder.price, placeorder.id, placeorder.uid, placeorder.couriername,placeorder.sellername,placeorder.uuid,placeorder.delivery)
         return JsonResponse({'status':'200'})
     except Exception as e:
         print(e)
