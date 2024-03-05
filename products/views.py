@@ -199,7 +199,7 @@ def searchproduct(request):
     products = Products.objects.filter(name__icontains=inputtext)
     page = request.POST.get('page', 1)
 
-    product_per_page = 10
+    product_per_page = 2
     paginator = Paginator(products,product_per_page)
     try:
         product = paginator.page(page)
