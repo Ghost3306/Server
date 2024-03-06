@@ -99,7 +99,7 @@ def sellersproducts(request):
     page = request.POST.get('page', 1)
     product = Products.objects.filter(sellerid=sellerid)
     
-    product_per_page = 10
+    product_per_page = 3
     paginator = Paginator(product,product_per_page)
     try:
         products = paginator.page(page)

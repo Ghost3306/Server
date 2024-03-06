@@ -12,5 +12,6 @@ urlpatterns = [
     path('delcart/',views.delcart,name='delcart'),
     path('savelater/',views.addsavelater,name='savelater'),
     path('savelatershow/',views.showsavelater,name='savelatershow'),
-    path('delsave/',views.delsavelater,name='delsave')
+    path('delsave/',views.delsavelater,name='delsave'),
+    
 ]

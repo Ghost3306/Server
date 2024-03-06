@@ -260,12 +260,9 @@ def delsavelater(request):
         print(e)
         return JsonResponse({'status':'403'})
 
-
-
-    
-
-    
-
+@csrf_exempt
+def ping(request):
+    return JsonResponse({'status':'200'})
     
     
     
