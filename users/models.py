@@ -1,5 +1,7 @@
 from django.db import models
 from django.utils import timezone
+
+
 class Customers(models.Model):
     name = models.CharField(max_length=50)
     email = models.EmailField(default = 'default@gmail.com')
