@@ -24,7 +24,7 @@ class Products(models.Model):
     len_review =models.IntegerField(default=0)
     color = models.CharField(max_length=15,default='white')
     country = models.CharField(max_length=30,default='white')
-    returndays = models.IntegerField(default=0)
+    returndays = models.IntegerField(default=0,null=True )
     warrenty = models.CharField(max_length=30,default='None')
     payondel = models.BooleanField(default=False)
     special = models.TextField(default='None')

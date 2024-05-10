@@ -50,16 +50,17 @@ def addproduct(request):
     color = request.POST.get('color')
     warrenty = request.POST.get('warrenty')
     country = request.POST.get('country')
-    returndays = request.POST.get('returndays')
+    returndays = request.POST.get('returndays',)
     special = request.POST.get('special')
     payondel= request.POST.get('payondel')
     if payondel=='true':
         payondel=True
     else:
         payondel=False
-   
-    if returndays is None:
-        returndays = "None"
+    print(type(returndays))
+    if returndays is 'None' or 'null':
+        print('null got ')
+        returndays = 0
     if special is None:
         special= "None"
 
